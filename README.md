@@ -2,6 +2,9 @@
 
 A React template for building interactive web maps with MapLibre GL JS.
 
+[![Open in CodeSandbox](https://img.shields.io/badge/Open%20in-CodeSandbox-blue?logo=codesandbox)](https://codesandbox.io/p/github/opengeos/vite-maplibre-react)
+[![Open in StackBlitz](https://img.shields.io/badge/Open%20in-StackBlitz-blue?logo=stackblitz)](https://stackblitz.com/github/opengeos/vite-maplibre-react)
+
 ## Features
 
 - **React 19** with TypeScript
