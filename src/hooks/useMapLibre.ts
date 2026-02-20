@@ -13,6 +13,7 @@ import { Geoman } from '@geoman-io/maplibre-geoman-free';
 import { GeoEditor } from 'maplibre-gl-geo-editor';
 import { LayerControl } from 'maplibre-gl-layer-control';
 import { Legend } from 'maplibre-gl-components';
+import { addControlGrid, DEFAULT_EXCLUDE_LAYERS } from 'maplibre-gl-components';
 
 import { countriesGeoJSON } from '../data/countries';
 import {
@@ -192,20 +193,44 @@ export function useMapLibre({
     const map = new maplibregl.Map(mapOptions);
     mapRef.current = map;
 
-    // Add navigation controls
-    map.addControl(new maplibregl.NavigationControl(), 'top-right');
-    map.addControl(new maplibregl.FullscreenControl(), 'top-right');
-    map.addControl(new maplibregl.GlobeControl(), 'top-right');
+    // // Add navigation controls
+    // map.addControl(new maplibregl.NavigationControl(), 'top-right');
+    // map.addControl(new maplibregl.FullscreenControl(), 'top-right');
+    // map.addControl(new maplibregl.GlobeControl(), 'top-right');
 
-    // Handle map load event
+    // // Handle map load event
     map.on('load', () => {
       setupLayers(map);
-      setupControls(map);
-      setupGeoman(map);
+      // setupControls(map);
+      // setupGeoman(map);
       setIsLoaded(true);
     });
 
     // Cleanup function
+
+
+    // Add layer control
+    const layerControl = new LayerControl({
+      collapsed: true,
+      layers: [],
+      panelWidth: 340,
+      panelMinWidth: 240,
+      panelMaxWidth: 450,
+      basemapStyleUrl: BASE_MAP_STYLE,
+      excludeLayers: [...DEFAULT_EXCLUDE_LAYERS],
+    });
+
+    map.addControl(layerControl, 'top-right');
+
+    // Add a ControlGrid with all default controls in one call
+    const controlGrid = addControlGrid(map, { basemapStyleUrl: BASE_MAP_STYLE });
+
+    // Register data-layer adapters so COG, Zarr, PMTiles layers appear in the LayerControl
+    for (const adapter of controlGrid.getAdapters()) {
+      layerControl.registerCustomAdapter(adapter);
+    }
+
+
     return () => {
       if (mapRef.current) {
         mapRef.current.remove();

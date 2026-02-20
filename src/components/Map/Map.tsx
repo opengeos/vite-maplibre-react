@@ -7,6 +7,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import '@geoman-io/maplibre-geoman-free/dist/maplibre-geoman.css';
 import 'maplibre-gl-geo-editor/style.css';
 import 'maplibre-gl-layer-control/style.css';
+import 'maplibre-gl-components/style.css';
 
 /**
  * Map component that renders a MapLibre GL map with controls and layers.
