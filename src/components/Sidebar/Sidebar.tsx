@@ -48,7 +48,7 @@ export function Sidebar({ mapCenter, mapZoom }: SidebarProps) {
                 <span className="info-label">Center</span>
                 <span className="info-value">
                   {mapCenter
-                    ? `${mapCenter[1].toFixed(4)}, ${mapCenter[0].toFixed(4)}`
+                    ? `${mapCenter[0].toFixed(4)}, ${mapCenter[1].toFixed(4)}`
                     : 'Loading...'}
                 </span>
               </div>
