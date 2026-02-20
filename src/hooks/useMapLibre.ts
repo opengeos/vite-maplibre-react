@@ -26,6 +26,7 @@ import {
 
 interface UseMapLibreOptions {
   container: RefObject<HTMLDivElement | null>;
+  onMove?: (center: [number, number], zoom: number) => void;
 }
 
 interface UseMapLibreReturn {
@@ -42,6 +43,7 @@ interface UseMapLibreReturn {
  */
 export function useMapLibre({
   container,
+  onMove,
 }: UseMapLibreOptions): UseMapLibreReturn {
   const mapRef = useRef<MapLibreMap | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -198,13 +200,27 @@ export function useMapLibre({
     // map.addControl(new maplibregl.FullscreenControl(), 'top-right');
     // map.addControl(new maplibregl.GlobeControl(), 'top-right');
 
-    // // Handle map load event
+    // Handle map load event
     map.on('load', () => {
       setupLayers(map);
       // setupControls(map);
       // setupGeoman(map);
       setIsLoaded(true);
+
+      // Fire initial position
+      if (onMove) {
+        const center = map.getCenter();
+        onMove([center.lng, center.lat], map.getZoom());
+      }
     });
+
+    // Track map movement
+    if (onMove) {
+      map.on('move', () => {
+        const center = map.getCenter();
+        onMove([center.lng, center.lat], map.getZoom());
+      });
+    }
 
     // Cleanup function
 
@@ -238,7 +254,7 @@ export function useMapLibre({
         setIsLoaded(false);
       }
     };
-  }, [container, setupLayers, setupControls, setupGeoman]);
+  }, [container, setupLayers, setupControls, setupGeoman, onMove]);
 
   return {
     map: mapRef.current,

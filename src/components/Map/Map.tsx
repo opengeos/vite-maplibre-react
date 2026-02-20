@@ -9,15 +9,19 @@ import 'maplibre-gl-geo-editor/style.css';
 import 'maplibre-gl-layer-control/style.css';
 import 'maplibre-gl-components/style.css';
 
+interface MapProps {
+  onMove?: (center: [number, number], zoom: number) => void;
+}
+
 /**
  * Map component that renders a MapLibre GL map with controls and layers.
  * Uses the useMapLibre hook to manage the imperative MapLibre API.
  */
-function Map() {
+function Map({ onMove }: MapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Initialize map using custom hook
-  useMapLibre({ container: containerRef });
+  useMapLibre({ container: containerRef, onMove });
 
   return <div ref={containerRef} className="map-container" />;
 }

@@ -169,6 +169,110 @@ The `ref` connects React to the actual DOM element, which is needed for librarie
 6. Cleanup function runs (map.remove())
 ```
 
+## Adding a New Component
+
+Here's how to add a new component, using the Sidebar as an example:
+
+### 1. Create the Component Directory
+
+```
+src/components/Sidebar/
+├── Sidebar.tsx      # Component logic
+├── Sidebar.css      # Component styles
+└── index.ts         # Barrel export
+```
+
+### 2. Write the Component
+
+```tsx
+// src/components/Sidebar/Sidebar.tsx
+import { useState } from 'react';
+import './Sidebar.css';
+
+interface SidebarProps {
+  mapCenter?: [number, number];
+  mapZoom?: number;
+}
+
+export function Sidebar({ mapCenter, mapZoom }: SidebarProps) {
+  const [activeTab, setActiveTab] = useState<'info' | 'layers'>('info');
+
+  return (
+    <aside className="sidebar">
+      <h1>MapLibre React</h1>
+      <p>Center: {mapCenter ? `${mapCenter[0]}, ${mapCenter[1]}` : 'Loading...'}</p>
+      <p>Zoom: {mapZoom?.toFixed(2) ?? 'Loading...'}</p>
+    </aside>
+  );
+}
+```
+
+### 3. Create the Barrel Export
+
+```tsx
+// src/components/Sidebar/index.ts
+export { Sidebar } from './Sidebar';
+```
+
+### 4. Add to Components Index
+
+```tsx
+// src/components/index.ts
+export { Map } from './Map';
+export { Sidebar } from './Sidebar';  // Add this line
+```
+
+### 5. Use in App.tsx
+
+```tsx
+import { useState, useCallback } from 'react';
+import { Map, Sidebar } from './components';
+
+function App() {
+  const [mapCenter, setMapCenter] = useState<[number, number]>();
+  const [mapZoom, setMapZoom] = useState<number>();
+
+  const handleMapMove = useCallback((center: [number, number], zoom: number) => {
+    setMapCenter(center);
+    setMapZoom(zoom);
+  }, []);
+
+  return (
+    <div className="app">
+      <Sidebar mapCenter={mapCenter} mapZoom={mapZoom} />
+      <main className="main-content">
+        <Map onMove={handleMapMove} />
+      </main>
+    </div>
+  );
+}
+```
+
+### Key Patterns
+
+| Pattern | Description |
+|---------|-------------|
+| **Props** | Pass data down from parent (`mapCenter`, `mapZoom`) |
+| **Callbacks** | Pass functions up to parent (`onMove`) |
+| **State lifting** | Store shared state in common ancestor (`App.tsx`) |
+| **TypeScript interfaces** | Define prop types for type safety |
+
+### Component Communication Flow
+
+```
+App.tsx (state: mapCenter, mapZoom)
+   │
+   ├── Sidebar (receives: mapCenter, mapZoom)
+   │      └── Displays the values
+   │
+   └── Map (receives: onMove callback)
+          └── Calls onMove when map moves
+```
+
+The parent component (`App`) holds the state and passes:
+- **Data down** to `Sidebar` via props
+- **Callbacks down** to `Map` so it can report changes back up
+
 ## Further Reading
 
 - [React Documentation](https://react.dev/)
