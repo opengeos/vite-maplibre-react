@@ -1,14 +1,17 @@
-import { Map } from './components';
+import { Map, Sidebar } from './components';
 import './App.css';
 
 /**
  * Main application component.
- * Renders the MapLibre map as the primary content.
+ * Renders the MapLibre map with a sidebar.
  */
 function App() {
   return (
     <div className="app">
-      <Map />
+      <Sidebar />
+      <main className="main-content">
+        <Map />
+      </main>
     </div>
   );
 }
